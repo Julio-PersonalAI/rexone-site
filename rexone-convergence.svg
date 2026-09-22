@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="340" height="104" viewBox="0 0 340 104" role="img" aria-labelledby="title desc">
+  <title id="title">RexOne</title>
+  <desc id="desc">Three paths converging into one result beside the RexOne wordmark</desc>
+  <g transform="translate(8 19)" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7 10h18c12 0 13 23 26 23h12" stroke="#14213D" stroke-width="6"/>
+    <path d="M7 33h56" stroke="#14213D" stroke-width="6"/>
+    <path d="M7 56h18c12 0 13-23 26-23" stroke="#14213D" stroke-width="6"/>
+    <circle cx="64" cy="33" r="8" fill="#C77B3B" stroke="#F8F7F4" stroke-width="3"/>
+  </g>
+  <text x="98" y="70" font-family="Inter, Arial, sans-serif" font-weight="800" font-size="54" letter-spacing="-2"><tspan fill="#14213D">Rex</tspan><tspan fill="#C77B3B">One</tspan></text>
+</svg>
