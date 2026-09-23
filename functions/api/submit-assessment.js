@@ -2,7 +2,8 @@ import { computeScores, recommendCategory, pricingBand } from "../_lib/scoring.j
 import { buildInternalAlertHtml, buildProspectEmailHtml } from "../_lib/email-html.js";
 
 const FROM_ADDRESS = "RexOne Assessment <assessment@rexone.ai>";
-const DEFAULT_ALERT_EMAIL = "jfarach@gmail.com";
+// ALERT_EMAIL is a Cloudflare-managed secret, deliberately not in this public repo.
+// If it's ever unset, the internal alert fails loudly (emailsSent drops to 1) rather than silently.
 
 export async function onRequestPost(context) {
   const { request, env } = context;
@@ -22,7 +23,7 @@ export async function onRequestPost(context) {
   const scores = computeScores(answers);
   const category = recommendCategory(answers);
   const band = pricingBand(scores.economicValue);
-  const alertTo = env.ALERT_EMAIL || DEFAULT_ALERT_EMAIL;
+  const alertTo = env.ALERT_EMAIL;
 
   const results = await Promise.allSettled([
     sendEmail(env, {
@@ -62,6 +63,7 @@ export async function onRequestOptions() {
 
 async function sendEmail(env, { to, subject, html, replyTo }) {
   if (!env.RESEND_API_KEY) throw new Error("RESEND_API_KEY not configured");
+  if (!to) throw new Error("Recipient missing (is the ALERT_EMAIL secret set?)");
   const payload = { from: FROM_ADDRESS, to: [to], subject, html };
   if (replyTo) payload.reply_to = replyTo;
 

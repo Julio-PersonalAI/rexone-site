@@ -2,5 +2,7 @@ name = "rexone-site"
 compatibility_date = "2026-09-22"
 pages_build_output_dir = "."
 
-[vars]
-ALERT_EMAIL = "jfarach@gmail.com"
+# Secrets (set via `wrangler pages secret put <NAME> --project-name=rexone-site`,
+# never committed here — this repo is public):
+#   RESEND_API_KEY  — Resend API key for sending assessment emails
+#   ALERT_EMAIL     — where completed-assessment alerts are delivered
