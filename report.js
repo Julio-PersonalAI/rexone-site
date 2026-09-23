@@ -51,7 +51,7 @@ function buildSummary(a) {
 }
 
 function render() {
-  const raw = sessionStorage.getItem("rexone_assessment_result");
+  const raw = localStorage.getItem("rexone_assessment_result");
   const page = document.getElementById("r-page");
 
   if (!raw) {

@@ -366,6 +366,30 @@ function attachHandlers(step, steps) {
   if (next) next.addEventListener("click", () => { if (stepIndex < steps.length - 1) { stepIndex++; render(); } });
 }
 
+let submitted = false;
+
+function submitAssessment(answers, contact) {
+  if (submitted) return;
+  submitted = true;
+  fetch("/api/submit-assessment", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ answers, contact }),
+  })
+    .then((res) => res.json().then((data) => ({ httpOk: res.ok, data })))
+    .then(({ httpOk, data }) => {
+      const statusEl = document.getElementById("a-email-status");
+      if (!statusEl) return;
+      const success = httpOk && data && data.ok && data.emailsSent === 2;
+      statusEl.textContent = success ? "A copy has been emailed to you." : "Couldn't send the email copy — your report is still available below.";
+    })
+    .catch((err) => {
+      console.error("Assessment submit failed:", err);
+      const statusEl = document.getElementById("a-email-status");
+      if (statusEl) statusEl.textContent = "Couldn't send the email copy — your report is still available below.";
+    });
+}
+
 function renderResults() {
   const scores = computeScores(answers);
   const category = recommendCategory(answers);
@@ -373,7 +397,8 @@ function renderResults() {
 
   // Persist for the printable report template (report.html reads this).
   const payload = { answers, contact, scores, category, band, generatedAt: new Date().toISOString() };
-  sessionStorage.setItem("rexone_assessment_result", JSON.stringify(payload));
+  localStorage.setItem("rexone_assessment_result", JSON.stringify(payload)); // localStorage, not sessionStorage: "View your report" opens a new tab, which doesn't share sessionStorage
+  submitAssessment(answers, contact);
 
   const gapNote = category.hasProof ? "" : `<p class="a-gap-note">This is a newer automation area for us — happy to walk through exactly how it'd work on the call.</p>`;
 
@@ -382,6 +407,7 @@ function renderResults() {
     <h2 class="a-question">Recommended first step: ${category.name}</h2>
     <p class="a-result-copy">${category.pitch}</p>
     ${gapNote}
+    <p id="a-email-status" class="a-fineprint">Sending your report by email…</p>
     <div class="a-result-grid">
       <div class="a-result-card"><span>Complexity</span><strong>Low–moderate</strong></div>
       <div class="a-result-card"><span>Timeline</span><strong>4–6 weeks</strong></div>

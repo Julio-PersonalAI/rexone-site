@@ -1,0 +1,6 @@
+name = "rexone-site"
+compatibility_date = "2026-09-22"
+pages_build_output_dir = "."
+
+[vars]
+ALERT_EMAIL = "jfarach@gmail.com"
